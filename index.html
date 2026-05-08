@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Bhoomi AI - Understand your soil health card and get instant, personalized fertilizer plans in your local language.">
+    <title>Bhoomi AI | Your Soil is Talking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Sans+Kannada:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">Bhoomi AI 🌱</div>
+        <nav>
+            <a href="#how-it-works" data-i18n="nav-how">How it Works</a>
+            <a href="#features" data-i18n="nav-features">Features</a>
+            <div class="lang-switcher">
+                <button class="lang-btn active" data-lang="en">English</button>
+                <button class="lang-btn" data-lang="hi">हिन्दी</button>
+                <button class="lang-btn" data-lang="kn">ಕನ್ನಡ</button>
+            </div>
+            <a href="#" id="login-link" data-i18n="nav-login">Login</a>
+            <a href="app.html" class="btn-secondary" data-i18n="nav-cta">Get Started</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero" class="hero">
+            <div class="hero-content fade-in">
+                <h1 data-i18n="hero-title">Your Soil is Talking.<br><span>Now, You Can Understand It.</span></h1>
+                <p data-i18n="hero-desc">Upload a photo of your soil health card and get instant, personalized fertilizer plans in your local language. Save money, grow better.</p>
+                <button class="cta-button">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    <span data-i18n="hero-btn">Upload Soil Report</span>
+                </button>
+            </div>
+            <div class="hero-visual fade-in slide-up">
+                <div class="hero-cards-container">
+                    <!-- Card 1: Soil Health Report -->
+                    <div class="hero-card card-report">
+                        <img src="card_banner_soil.png" alt="Rich agricultural soil in farmer's hands" class="card-banner-img">
+                        <div class="card-header" data-i18n="card1-header">COMPREHENSIVE SOIL HEALTH REPORT</div>
+                        <div class="card-body">
+                            <div class="gauge-section">
+                                <div class="gauge-container">
+                                    <div class="gauge-fill"></div>
+                                    <div class="gauge-cover"></div>
+                                </div>
+                                <div class="gauge-label">
+                                    <strong>78/100</strong>
+                                    <span data-i18n="card1-index">SOIL HEALTH INDEX - GOOD</span>
+                                </div>
+                            </div>
+                            
+                            <div class="chart-section">
+                                <h4 data-i18n="card1-nutrients">NUTRIENT LEVELS (PPM)</h4>
+                                <div class="bar-chart">
+                                    <div class="bar-row"><span class="bar-label">N</span><div class="bar-track"><div class="bar-fill" style="width: 40%; background: #e74c3c;"></div></div><span class="bar-value" data-i18n="lvl-low">Low</span></div>
+                                    <div class="bar-row"><span class="bar-label">P</span><div class="bar-track"><div class="bar-fill" style="width: 75%; background: #2ecc71;"></div></div><span class="bar-value" data-i18n="lvl-opt">Opt</span></div>
+                                    <div class="bar-row"><span class="bar-label">K</span><div class="bar-track"><div class="bar-fill" style="width: 85%; background: #2ecc71;"></div></div><span class="bar-value" data-i18n="lvl-opt">Opt</span></div>
+                                    <div class="bar-row"><span class="bar-label">Ca</span><div class="bar-track"><div class="bar-fill" style="width: 90%; background: #3498db;"></div></div><span class="bar-value" data-i18n="lvl-high">High</span></div>
+                                    <div class="bar-row"><span class="bar-label">Mg</span><div class="bar-track"><div class="bar-fill" style="width: 65%; background: #f1c40f;"></div></div><span class="bar-value" data-i18n="lvl-mod">Mod</span></div>
+                                    <div class="bar-row"><span class="bar-label">S</span><div class="bar-track"><div class="bar-fill" style="width: 30%; background: #e74c3c;"></div></div><span class="bar-value" data-i18n="lvl-low">Low</span></div>
+                                </div>
+                            </div>
+
+                            <div class="table-section">
+                                <h4 data-i18n="card1-physical">PHYSICAL PROPERTIES</h4>
+                                <table class="report-table">
+                                    <tr><td data-i18n="prop-ph">pH Level</td><td>6.8</td></tr>
+                                    <tr><td data-i18n="prop-om">Organic Matter</td><td>4.5%</td></tr>
+                                    <tr><td data-i18n="prop-ec">Electrical Conductivity</td><td>1.2 dS/m</td></tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Fertilizer List -->
+                    <div class="hero-card card-action">
+                        <img src="card_banner_garden.png" alt="Lush green organic garden" class="card-banner-img">
+                        <div class="card-header action-header" data-i18n="card2-header">MY PERSONALIZED ACTION PLAN</div>
+                        <div class="card-body">
+                            
+                            <div class="optimize-toggle-wrapper">
+                                <span class="toggle-label-text" data-i18n="toggle-label">Optimize for:</span>
+                                <div class="toggle-switch-container">
+                                    <span class="toggle-option active" id="label-yield" data-i18n="toggle-yield">Max Yield</span>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="optimize-checkbox">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <span class="toggle-option" id="label-organic" data-i18n="toggle-organic">Lower Cost</span>
+                                </div>
+                            </div>
+
+                            <div class="plan-content plan-yield active">
+                                <div class="action-section">
+                                    <h4 class="action-title" data-i18n="plan-chem-title">CHEMICAL FERTILIZERS</h4>
+                                    <ul class="action-list">
+                                        <li data-i18n="plan-li-urea"><span class="check-icon">✓</span> Urea (45-0-0) - 2 Bags/Acre</li>
+                                        <li data-i18n="plan-li-dap"><span class="check-icon">✓</span> DAP (18-46-0) - 1 Bag/Acre</li>
+                                        <li data-i18n="plan-li-mop"><span class="check-icon">✓</span> MOP (0-0-60) - 0.5 Bag/Acre</li>
+                                    </ul>
+                                </div>
+                                <div class="action-section">
+                                    <h4 class="action-title" data-i18n="plan-yield-title">ESTIMATED YIELD</h4>
+                                    <div class="yield-badge" data-i18n="plan-yield-badge">🔥 Maximum Potential Output</div>
+                                </div>
+                            </div>
+
+                            <div class="plan-content plan-organic">
+                                <div class="action-section">
+                                    <h4 class="action-title" data-i18n="plan-org-title">LOCAL ORGANIC SUBSTITUTES</h4>
+                                    <ul class="action-list">
+                                        <li data-i18n="plan-li-neem"><span class="check-icon">✓</span> Neem Cake - 200kg/Acre</li>
+                                        <li data-i18n="plan-li-fym"><span class="check-icon">✓</span> Farm Yard Manure (FYM) - 2 Tons/Acre</li>
+                                        <li data-i18n="plan-li-vermi"><span class="check-icon">✓</span> Vermicompost - 500kg/Acre</li>
+                                    </ul>
+                                </div>
+                                <div class="action-section">
+                                    <h4 class="action-title" data-i18n="plan-impact-title">FINANCIAL IMPACT</h4>
+                                    <div class="savings-badge" data-i18n="plan-savings-badge">💰 Total Cost Savings: ~40%</div>
+                                </div>
+                            </div>
+                            
+                            <div class="action-footer">
+                                <div class="ai-badge" data-i18n="ai-badge">✨ Generated by Bhoomi AI</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <h2 class="section-title" data-i18n="features-title">Why Choose Bhoomi AI?</h2>
+            <div class="feature-grid">
+                <div class="feature-card fade-in slide-up delay-1">
+                    <div class="icon-wrapper">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+                    </div>
+                    <h3 data-i18n="feat1-title">No More Technical Jargon</h3>
+                    <p data-i18n="feat1-desc">We translate complex NPK and pH values into simple, actionable steps in your mother tongue.</p>
+                </div>
+                <div class="feature-card fade-in slide-up delay-2">
+                    <div class="icon-wrapper">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    </div>
+                    <h3 data-i18n="feat2-title">Save ₹3,000 - ₹5,000 per Acre</h3>
+                    <p data-i18n="feat2-desc">Stop wasting money on fertilizers your soil doesn't need. Our AI balances your budget with your soil’s actual requirements.</p>
+                </div>
+                <div class="feature-card fade-in slide-up delay-3">
+                    <div class="icon-wrapper">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c4-4 8-9 8-14a8 8 0 0 0-16 0c0 5 4 10 8 14z"/><path d="M12 22V10"/></svg>
+                    </div>
+                    <h3 data-i18n="feat3-title">Healthy Soil, Better Yield</h3>
+                    <p data-i18n="feat3-desc">Reduce chemical dependency by integrating organic substitutes, preventing long-term ecological damage to your land.</p>
+                </div>
+            </div>
+
+            <!-- By the Numbers Counter -->
+            <div class="stats-counter-section fade-in" id="stats-counter">
+                <div class="stat-item">
+                    <div class="stat-number" data-target="98" data-suffix="%">0%</div>
+                    <div class="stat-label" data-i18n="stat1-label">Translation Accuracy</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="25" data-suffix="%">0%</div>
+                    <div class="stat-label" data-i18n="stat2-label">Average Cost Reduction</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="10" data-suffix="+">0+</div>
+                    <div class="stat-label" data-i18n="stat3-label">Regional Languages Supported</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="crop-selector" class="crop-selector">
+            <h2 class="section-title" data-i18n="crop-title">Select Your Crop</h2>
+            <div class="crop-grid">
+                <div class="crop-card" data-crop="rice">
+                    <div class="crop-icon">🌾</div>
+                    <h3 data-i18n="crop-rice">Rice</h3>
+                </div>
+                <div class="crop-card" data-crop="wheat">
+                    <div class="crop-icon">🍞</div>
+                    <h3 data-i18n="crop-wheat">Wheat</h3>
+                </div>
+                <div class="crop-card" data-crop="sugarcane">
+                    <div class="crop-icon">🎋</div>
+                    <h3 data-i18n="crop-sugarcane">Sugarcane</h3>
+                </div>
+                <div class="crop-card" data-crop="maize">
+                    <div class="crop-icon">🌽</div>
+                    <h3 data-i18n="crop-maize">Maize</h3>
+                </div>
+            </div>
+            
+            <div id="action-plan-container" class="action-plan-container">
+                <div class="action-plan-content">
+                    <h3 data-i18n="plan-title">Sample Action Plan</h3>
+                    <div class="plan-details">
+                        <div class="plan-item">
+                            <span class="plan-icon">🧪</span>
+                            <p id="plan-chem">Increase Zinc application by 10%</p>
+                        </div>
+                        <div class="plan-item">
+                            <span class="plan-icon">🌿</span>
+                            <p id="plan-org">Add 2 tons of FYM (Farm Yard Manure) per acre</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="impact" class="impact">
+            <div class="impact-content fade-in">
+                <h2 class="section-title" data-i18n="impact-title">Empowering the Modern Farmer</h2>
+                <p data-i18n="impact-desc">We believe that technology should serve the people who feed the world. By putting powerful AI directly in your hands, we are helping build a more sustainable and prosperous future for farms everywhere.</p>
+            </div>
+            <div class="impact-visual fade-in slide-up delay-1">
+                <img src="farmer.png" alt="A modern farmer in the field" class="farmer-image">
+            </div>
+        </section>
+
+        <section id="how-it-works" class="how-it-works">
+            <h2 class="section-title text-light" data-i18n="how-title">How It Works</h2>
+            <div class="steps-container">
+                <div class="step fade-in">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3 data-i18n="how1-title">Snap</h3>
+                        <p data-i18n="how1-desc">Upload photo</p>
+                    </div>
+                </div>
+                <div class="step fade-in">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3 data-i18n="how2-title">Analyze</h3>
+                        <p data-i18n="how2-desc">AI processing</p>
+                    </div>
+                </div>
+                <div class="step fade-in">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3 data-i18n="how3-title">Grow</h3>
+                        <p data-i18n="how3-desc">Get recommendations</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+    </main>
+
+    <footer>
+        <div class="footer-map-section">
+            <div class="map-container">
+                <svg viewBox="0 0 200 250" class="karnataka-map" xmlns="http://www.w3.org/2000/svg">
+                    <path class="state-outline" d="M 65 10 C 95 10, 100 40, 110 50 C 130 65, 125 90, 145 100 C 160 110, 165 140, 155 160 C 150 180, 160 190, 150 200 C 140 210, 115 240, 100 240 C 90 240, 80 230, 80 215 C 80 200, 60 190, 50 170 C 40 150, 45 125, 45 110 C 45 95, 30 85, 30 70 C 30 55, 35 40, 45 35 C 55 30, 60 10, 65 10 Z"/>
+                    <!-- Highlighted Districts -->
+                    <g class="district-group">
+                        <circle cx="140" cy="180" r="5" class="district-point pulse">
+                            <title data-i18n="tooltip-blr">120 Active Fertilizer Dealers</title>
+                        </circle> <!-- Bengaluru (SE) -->
+                        <text x="150" y="184" class="district-label" data-i18n="dist-blr">Bengaluru</text>
+                    </g>
+                    <g class="district-group">
+                        <circle cx="100" cy="220" r="4" class="district-point pulse" style="animation-delay: 0.5s">
+                            <title data-i18n="tooltip-mys">85 Active Fertilizer Dealers</title>
+                        </circle> <!-- Mysuru (S) -->
+                        <text x="110" y="224" class="district-label" data-i18n="dist-mys">Mysuru</text>
+                    </g>
+                    <g class="district-group">
+                        <circle cx="70" cy="100" r="4" class="district-point pulse" style="animation-delay: 1s">
+                            <title data-i18n="tooltip-hub">150 Active Fertilizer Dealers</title>
+                        </circle> <!-- Hubballi (NW Center) -->
+                        <text x="80" y="104" class="district-label" data-i18n="dist-hub">Hubballi</text>
+                    </g>
+                    <g class="district-group">
+                        <circle cx="45" cy="50" r="4" class="district-point pulse" style="animation-delay: 1.5s">
+                            <title data-i18n="tooltip-bel">90 Active Fertilizer Dealers</title>
+                        </circle> <!-- Belagavi (NW) -->
+                        <text x="55" y="54" class="district-label" data-i18n="dist-bel">Belagavi</text>
+                    </g>
+                </svg>
+            </div>
+            <div class="footer-info">
+                <h3 data-i18n="footer-dealers">Growing with Karnataka</h3>
+                <p class="disclaimer" data-i18n="footer-disclaimer">Connecting 5,000+ farmers to local input providers in real-time.</p>
+            </div>
+        </div>
+
+        <section class="farmer-carousel-section">
+            <h2 class="section-title" data-i18n="testi-title">Built for Farmers</h2>
+            <div class="carousel-container">
+                <div class="testimonial-slide active">
+                    <p class="quote-text" data-i18n="carousel-1-text">Bhoomi AI turned those confusing lab reports into a simple shopping list. My yield is up 15%!</p>
+                    <div class="author-info">
+                        <div class="avatar-placeholder avatar-1"></div>
+                        <p class="quote-author" data-i18n="carousel-1-author">— Ramesh, Mysuru</p>
+                    </div>
+                </div>
+                <div class="testimonial-slide">
+                    <p class="quote-text" data-i18n="carousel-2-text">I saved ₹4,000 this season by only using the fertilizers my soil actually needed. No more guesswork.</p>
+                    <div class="author-info">
+                        <div class="avatar-placeholder avatar-2"></div>
+                        <p class="quote-author" data-i18n="carousel-2-author">— Laxmi, Belagavi</p>
+                    </div>
+                </div>
+                <div class="testimonial-slide">
+                    <p class="quote-text" data-i18n="carousel-3-text">The organic suggestions are excellent. My soil feels healthier, and the cost is much lower.</p>
+                    <div class="author-info">
+                        <div class="avatar-placeholder avatar-3"></div>
+                        <p class="quote-author" data-i18n="carousel-3-author">— Siddarth, Hubballi</p>
+                    </div>
+                </div>
+                
+                <div class="carousel-indicators">
+                    <span class="dot active" data-slide="0"></span>
+                    <span class="dot" data-slide="1"></span>
+                    <span class="dot" data-slide="2"></span>
+                </div>
+            </div>
+        </section>
+
+        <p data-i18n="footer-text" class="footer-copyright">&copy; 2026 Bhoomi AI. Empowering farmers with data.</p>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2 data-i18n="login-title">Login to Bhoomi AI</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email" data-i18n="login-email">Email Address</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" data-i18n="login-pass">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn-primary" data-i18n="login-submit">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhoomi AI | Analyze Your Soil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Noto+Sans+Kannada:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --primary: #2E7D32;
+            --primary-light: #4CAF50;
+            --primary-dark: #1B5E20;
+            --secondary: #5D4037;
+            --accent: #E1F5FE;
+            --text-main: #212121;
+            --text-light: #757575;
+            --bg-main: #FDFDFD;
+            --white: #FFFFFF;
+            --border: rgba(0,0,0,0.08);
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.10);
+            --shadow-lg: 0 20px 48px rgba(0,0,0,0.12);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', 'Noto Sans Kannada', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ─── APP HERO ─── */
+        .app-hero {
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 50%, #e3f2fd 100%);
+            padding: 5rem 5% 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .app-hero::before {
+            content: '';
+            position: absolute;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(76,175,80,0.12) 0%, transparent 70%);
+            top: -150px; right: -100px;
+            border-radius: 50%;
+        }
+        .app-hero::after {
+            content: '';
+            position: absolute;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(46,125,50,0.08) 0%, transparent 70%);
+            bottom: -100px; left: -50px;
+            border-radius: 50%;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(46,125,50,0.1);
+            border: 1px solid rgba(46,125,50,0.2);
+            color: var(--primary-dark);
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.3px;
+        }
+        .app-hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            line-height: 1.15;
+        }
+        .app-hero h1 span { color: var(--primary); }
+        .app-hero p {
+            font-size: 1.15rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ─── MAIN LAYOUT ─── */
+        .app-body {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 3rem 5% 5rem;
+        }
+
+        /* ─── ANALYSIS CARD ─── */
+        .analysis-card {
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        /* ─── TABS ─── */
+        .tab-bar {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            background: #fafafa;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 1.1rem 1rem;
+            background: none;
+            border: none;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.25s;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .tab-btn.active {
+            color: var(--primary);
+            background: var(--white);
+        }
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; left: 0; right: 0;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        /* ─── TAB CONTENT ─── */
+        .tab-content { padding: 2rem; }
+        .tab-content.hidden { display: none; }
+
+        /* ─── UPLOAD ZONE ─── */
+        .upload-zone {
+            border: 2.5px dashed rgba(46,125,50,0.3);
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fafffe;
+            position: relative;
+            min-height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .upload-zone:hover, .upload-zone.drag-over {
+            border-color: var(--primary);
+            background: rgba(76,175,80,0.04);
+        }
+        .upload-placeholder { pointer-events: none; }
+        .upload-icon {
+            width: 72px; height: 72px;
+            background: rgba(46,125,50,0.08);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1.2rem;
+            color: var(--primary);
+        }
+        .upload-placeholder h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.4rem;
+        }
+        .upload-placeholder p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 1.2rem;
+        }
+        .upload-file-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            pointer-events: all;
+            transition: background 0.2s;
+        }
+        .upload-file-btn:hover { background: var(--primary-dark); }
+        .preview-container {
+            position: relative;
+            width: 100%;
+        }
+        .preview-img {
+            max-height: 280px;
+            max-width: 100%;
+            border-radius: 12px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+        .remove-img-btn {
+            position: absolute;
+            top: 8px; right: 8px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border: none;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* ─── MANUAL FORM ─── */
+        .manual-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.2rem;
+        }
+        .form-field label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.4rem;
+        }
+        .form-field input, .form-field select {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            background: var(--white);
+            transition: border-color 0.2s;
+            outline: none;
+        }
+        .form-field input:focus, .form-field select:focus {
+            border-color: var(--primary-light);
+        }
+
+        /* ─── DIVIDERS & INNER SECTIONS ─── */
+        .config-section {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--border);
+        }
+        .config-section h3 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 1rem;
+        }
+
+        /* ─── PILL SELECTORS ─── */
+        .pill-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+        .pill-btn {
+            padding: 0.5rem 1.1rem;
+            border: 1.5px solid var(--border);
+            border-radius: 30px;
+            background: var(--white);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .pill-btn:hover { border-color: var(--primary-light); color: var(--primary); }
+        .pill-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+        .crop-pill-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        /* ─── ANALYZE BUTTON ─── */
+        .analyze-cta {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--border);
+        }
+        .analyze-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1.1rem 2rem;
+            border-radius: 14px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            box-shadow: 0 6px 20px rgba(46,125,50,0.25);
+        }
+        .analyze-btn:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 10px 28px rgba(46,125,50,0.35);
+            transform: translateY(-1px);
+        }
+        .analyze-btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-icon { font-size: 1.2rem; }
+
+        /* ─── LOADING ─── */
+        .loading-section {
+            text-align: center;
+            padding: 5rem 2rem;
+        }
+        .loading-section.hidden { display: none; }
+        .loading-visual {
+            position: relative;
+            width: 100px; height: 100px;
+            margin: 0 auto 2rem;
+        }
+        .loading-ring {
+            position: absolute;
+            inset: 0;
+            border: 4px solid transparent;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        .loading-ring:nth-child(2) {
+            inset: 12px;
+            border-top-color: transparent;
+            border-right-color: var(--primary-light);
+            animation-duration: 1.5s;
+            animation-direction: reverse;
+        }
+        .loading-ring:nth-child(3) {
+            inset: 24px;
+            border-top-color: var(--secondary);
+            animation-duration: 2s;
+        }
+        .loading-center {
+            position: absolute;
+            inset: 36px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .loading-steps {
+            margin-top: 1.5rem;
+        }
+        .loading-step {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            padding: 0.5rem;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            transition: all 0.4s;
+        }
+        .loading-step.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .loading-step .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            opacity: 0.4;
+        }
+        .loading-step.active .dot {
+            opacity: 1;
+            animation: blink 0.8s ease-in-out infinite;
+        }
+        @keyframes blink {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.5); }
+        }
+
+        /* ─── RESULTS ─── */
+        .results-section { padding-top: 3rem; }
+        .results-section.hidden { display: none; }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .results-header h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--secondary);
+        }
+        .results-header h2 span { color: var(--primary); }
+        .reanalyze-btn {
+            background: none;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .reanalyze-btn:hover { background: var(--primary); color: white; }
+
+        /* Results Grid */
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        @media (max-width: 700px) {
+            .results-grid { grid-template-columns: 1fr; }
+            .app-hero h1 { font-size: 2rem; }
+        }
+
+        .result-card {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            animation: fadeUp 0.5s ease both;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .result-card:nth-child(1) { animation-delay: 0.05s; }
+        .result-card:nth-child(2) { animation-delay: 0.15s; }
+        .result-card:nth-child(3) { animation-delay: 0.25s; }
+        .result-card:nth-child(4) { animation-delay: 0.35s; }
+
+        .result-card.full-width { grid-column: 1 / -1; }
+
+        .card-head {
+            padding: 1rem 1.4rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+        }
+        .card-head.green { background: #f0f9f0; color: var(--primary-dark); }
+        .card-head.blue { background: #e8f4fd; color: #1565c0; }
+        .card-head.brown { background: #fdf3ec; color: var(--secondary); }
+        .card-head.gold { background: #fffde7; color: #b08800; }
+
+        .card-body { padding: 1.4rem; }
+
+        /* Soil Score */
+        .score-display {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.2rem;
+        }
+        .score-circle {
+            position: relative;
+            width: 90px; height: 90px;
+            flex-shrink: 0;
+        }
+        .score-circle svg { width: 90px; height: 90px; transform: rotate(-90deg); }
+        .score-bg { fill: none; stroke: #e0e0e0; stroke-width: 8; }
+        .score-fill {
+            fill: none;
+            stroke: var(--primary);
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-dasharray: 226.2;
+            stroke-dashoffset: 226.2;
+            transition: stroke-dashoffset 1.5s ease;
+        }
+        .score-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .score-num {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1;
+        }
+        .score-label {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+        .score-details { flex: 1; }
+        .score-grade {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+        .score-sub {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        /* Nutrient Bars */
+        .nutrient-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            gap: 0.6rem;
+            font-size: 0.85rem;
+        }
+        .nutrient-name {
+            width: 28px;
+            font-weight: 700;
+            color: var(--secondary);
+            flex-shrink: 0;
+        }
+        .nutrient-track {
+            flex: 1;
+            height: 10px;
+            background: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .nutrient-bar {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 1s ease;
+        }
+        .bar-low { background: #ef5350; }
+        .bar-mod { background: #ffa726; }
+        .bar-opt { background: #66bb6a; }
+        .bar-high { background: #42a5f5; }
+        .nutrient-val {
+            width: 38px;
+            text-align: right;
+            font-size: 0.78rem;
+            color: var(--text-light);
+            flex-shrink: 0;
+        }
+
+        /* Properties Table */
+        .prop-table { width: 100%; }
+        .prop-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.55rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.88rem;
+        }
+        .prop-row:last-child { border-bottom: none; }
+        .prop-label { color: var(--text-light); }
+        .prop-val { font-weight: 700; color: var(--text-main); }
+
+        /* Recommendation Lists */
+        .rec-list { list-style: none; padding: 0; }
+        .rec-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.65rem 0;
+            border-bottom: 1px solid #f5f5f5;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+        .rec-item:last-child { border-bottom: none; }
+        .rec-icon {
+            flex-shrink: 0;
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem;
+            margin-top: 1px;
+        }
+        .rec-icon.check { background: #e8f5e9; color: var(--primary); }
+        .rec-icon.leaf { background: #e8f5e9; color: var(--primary); }
+
+        /* Summary */
+        .summary-text {
+            font-size: 1rem;
+            line-height: 1.75;
+            color: var(--text-main);
+        }
+        .summary-text p { margin-bottom: 0.8rem; }
+        .summary-text p:last-child { margin-bottom: 0; }
+
+        /* Impact Badge */
+        .impact-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+        .impact-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #f5f9f5;
+            border: 1px solid rgba(46,125,50,0.15);
+            border-radius: 10px;
+            padding: 0.6rem 1rem;
+            font-size: 0.88rem;
+        }
+        .impact-badge strong { color: var(--primary); font-size: 1.1rem; }
+
+        /* Error */
+        .error-msg {
+            background: #fff3e0;
+            border: 1px solid #ffcc80;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            color: #e65100;
+            font-size: 0.95rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        /* ─── RESPONSIVE NAV ─── */
+        @media (max-width: 768px) {
+            nav { display: flex !important; flex-wrap: wrap; gap: 0.5rem; }
+            .app-hero { padding: 3.5rem 5% 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="logo">Bhoomi AI 🌱</div>
+    <nav>
+        <a href="index.html" style="display:flex;align-items:center;gap:0.4rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+            Home
+        </a>
+        <a href="#features" style="margin-left:1.5rem;">Features</a>
+        <div class="lang-switcher" style="margin-left:1.5rem;">
+            <button class="lang-btn active" data-lang="en">English</button>
+            <button class="lang-btn" data-lang="hi">हिन्दी</button>
+            <button class="lang-btn" data-lang="kn">ಕನ್ನಡ</button>
+        </div>
+    </nav>
+</header>
+
+<!-- HERO -->
+<section class="app-hero">
+    <div style="position:relative;z-index:1;">
+        <div class="hero-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+            AI-Powered Soil Analysis
+        </div>
+        <h1>Analyze Your <span>Soil Health Card</span></h1>
+        <p>Upload a photo of your government-issued soil health card and get instant, personalized fertilizer recommendations in your language.</p>
+    </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<div class="app-body">
+
+    <!-- UPLOAD CARD -->
+    <div class="analysis-card" id="analysis-card">
+
+        <!-- Tabs -->
+        <div class="tab-bar">
+            <button class="tab-btn active" data-tab="upload" id="tab-upload-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                Upload Soil Card Photo
+            </button>
+            <button class="tab-btn" data-tab="manual" id="tab-manual-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Enter Data Manually
+            </button>
+        </div>
+
+        <!-- Upload Tab -->
+        <div class="tab-content" id="tab-upload">
+            <input type="file" id="file-input" accept="image/*" style="display:none">
+            <div class="upload-zone" id="upload-zone">
+                <div class="upload-placeholder" id="upload-placeholder">
+                    <div class="upload-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                    </div>
+                    <h3>Drag & drop your soil health card</h3>
+                    <p>Supports JPG, PNG, HEIC — or take a live photo on mobile</p>
+                    <button class="upload-file-btn" id="upload-btn">Choose File</button>
+                </div>
+                <div class="preview-container hidden" id="preview-container">
+                    <img src="" alt="Soil card preview" class="preview-img" id="preview-img">
+                    <button class="remove-img-btn" id="remove-img-btn" title="Remove image">✕</button>
+                </div>
+            </div>
+            <p style="text-align:center;font-size:0.8rem;color:var(--text-light);margin-top:0.75rem;">
+                No card? No problem — try the <a href="#" id="demo-link" style="color:var(--primary);font-weight:600;">demo data</a> instead.
+            </p>
+        </div>
+
+        <!-- Manual Tab -->
+        <div class="tab-content hidden" id="tab-manual">
+            <div class="manual-form">
+                <div class="form-field">
+                    <label>Nitrogen (N) — kg/ha</label>
+                    <input type="number" id="m-n" placeholder="e.g. 120" min="0" max="1000">
+                </div>
+                <div class="form-field">
+                    <label>Phosphorus (P) — kg/ha</label>
+                    <input type="number" id="m-p" placeholder="e.g. 45" min="0" max="500">
+                </div>
+                <div class="form-field">
+                    <label>Potassium (K) — kg/ha</label>
+                    <input type="number" id="m-k" placeholder="e.g. 180" min="0" max="1000">
+                </div>
+                <div class="form-field">
+                    <label>pH Level</label>
+                    <input type="number" id="m-ph" placeholder="e.g. 6.8" step="0.1" min="0" max="14">
+                </div>
+                <div class="form-field">
+                    <label>Organic Matter (%)</label>
+                    <input type="number" id="m-om" placeholder="e.g. 2.5" step="0.1" min="0" max="20">
+                </div>
+                <div class="form-field">
+                    <label>Electrical Conductivity (dS/m)</label>
+                    <input type="number" id="m-ec" placeholder="e.g. 0.8" step="0.1" min="0" max="20">
+                </div>
+            </div>
+        </div>
+
+        <!-- Crop Selector -->
+        <div class="config-section">
+            <h3>Your Crop</h3>
+            <div class="pill-group" id="crop-group">
+                <button class="pill-btn crop-pill-btn active" data-crop="Rice">🌾 Rice</button>
+                <button class="pill-btn crop-pill-btn" data-crop="Wheat">🌿 Wheat</button>
+                <button class="pill-btn crop-pill-btn" data-crop="Sugarcane">🎋 Sugarcane</button>
+                <button class="pill-btn crop-pill-btn" data-crop="Maize">🌽 Maize</button>
+                <button class="pill-btn crop-pill-btn" data-crop="Cotton">🌸 Cotton</button>
+                <button class="pill-btn crop-pill-btn" data-crop="Groundnut">🥜 Groundnut</button>
+            </div>
+        </div>
+
+        <!-- Language Selector -->
+        <div class="config-section">
+            <h3>Response Language</h3>
+            <div class="pill-group" id="lang-group">
+                <button class="pill-btn active" data-response-lang="English">English</button>
+                <button class="pill-btn" data-response-lang="Hindi">हिन्दी</button>
+                <button class="pill-btn" data-response-lang="Kannada">ಕನ್ನಡ</button>
+                <button class="pill-btn" data-response-lang="Telugu">తెలుగు</button>
+                <button class="pill-btn" data-response-lang="Tamil">தமிழ்</button>
+                <button class="pill-btn" data-response-lang="Marathi">मराठी</button>
+            </div>
+        </div>
+
+        <!-- Error Message -->
+        <div class="error-msg" id="error-msg"></div>
+
+        <!-- CTA -->
+        <div class="analyze-cta">
+            <button class="analyze-btn" id="analyze-btn">
+                <span class="btn-icon">✨</span>
+                <span id="analyze-btn-text">Analyze My Soil</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- LOADING -->
+    <div class="loading-section hidden" id="loading-section">
+        <div class="loading-visual">
+            <div class="loading-ring"></div>
+            <div class="loading-ring"></div>
+            <div class="loading-ring"></div>
+            <div class="loading-center">🌱</div>
+        </div>
+        <h2 style="font-size:1.5rem;font-weight:700;color:var(--secondary);margin-bottom:0.5rem;">Analyzing your soil…</h2>
+        <p style="color:var(--text-light);margin-bottom:1.5rem;">Our AI is reading your soil data and preparing your personalized plan</p>
+        <div class="loading-steps" id="loading-steps">
+            <div class="loading-step active" id="step-1"><span class="dot"></span> Reading soil health card</div>
+            <div class="loading-step" id="step-2"><span class="dot"></span> Checking nutrient levels</div>
+            <div class="loading-step" id="step-3"><span class="dot"></span> Matching local fertilizer options</div>
+            <div class="loading-step" id="step-4"><span class="dot"></span> Generating your action plan</div>
+        </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results-section hidden" id="results-section">
+        <div class="results-header">
+            <h2>Your <span>Personalized Plan</span></h2>
+            <button class="reanalyze-btn" id="reanalyze-btn">
+                ← Analyze Another
+            </button>
+        </div>
+        <div class="results-grid" id="results-grid">
+            <!-- Dynamically populated -->
+        </div>
+    </div>
+
+</div><!-- end .app-body -->
+
+<footer style="background:#f8f9fa;padding:2rem 5%;text-align:center;border-top:1px solid #e0e0e0;margin-top:2rem;">
+    <p style="color:#7f8c8d;font-size:0.9rem;">© 2026 Bhoomi AI. Empowering farmers with data.</p>
+</footer>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────
+let selectedCrop = 'Rice';
+let selectedLang = 'English';
+let uploadedImageBase64 = null;
+let activeTab = 'upload';
+let isDemo = false;
+
+// ─── DOM REFS ────────────────────────────────────────────
+const fileInput = document.getElementById('file-input');
+const uploadZone = document.getElementById('upload-zone');
+const uploadBtn = document.getElementById('upload-btn');
+const uploadPlaceholder = document.getElementById('upload-placeholder');
+const previewContainer = document.getElementById('preview-container');
+const previewImg = document.getElementById('preview-img');
+const removeImgBtn = document.getElementById('remove-img-btn');
+const analyzeBtn = document.getElementById('analyze-btn');
+const analyzeBtnText = document.getElementById('analyze-btn-text');
+const analysisCard = document.getElementById('analysis-card');
+const loadingSection = document.getElementById('loading-section');
+const resultsSection = document.getElementById('results-section');
+const reanalyzeBtn = document.getElementById('reanalyze-btn');
+const errorMsg = document.getElementById('error-msg');
+
+// ─── TABS ─────────────────────────────────────────────────
+document.getElementById('tab-upload-btn').addEventListener('click', () => switchTab('upload'));
+document.getElementById('tab-manual-btn').addEventListener('click', () => switchTab('manual'));
+
+function switchTab(tab) {
+    activeTab = tab;
+    document.getElementById('tab-upload-btn').classList.toggle('active', tab === 'upload');
+    document.getElementById('tab-manual-btn').classList.toggle('active', tab === 'manual');
+    document.getElementById('tab-upload').classList.toggle('hidden', tab !== 'upload');
+    document.getElementById('tab-manual').classList.toggle('hidden', tab !== 'manual');
+    isDemo = false;
+}
+
+// ─── FILE UPLOAD ──────────────────────────────────────────
+uploadBtn.addEventListener('click', (e) => { e.stopPropagation(); fileInput.click(); });
+uploadZone.addEventListener('click', () => { if (!uploadedImageBase64) fileInput.click(); });
+
+uploadZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadZone.classList.add('drag-over');
+});
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+uploadZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) handleFile(file);
+});
+
+fileInput.addEventListener('change', (e) => {
+    if (e.target.files[0]) handleFile(e.target.files[0]);
+});
+
+removeImgBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    clearImage();
+});
+
+function handleFile(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const dataUrl = e.target.result;
+        uploadedImageBase64 = dataUrl.split(',')[1];
+        previewImg.src = dataUrl;
+        uploadPlaceholder.classList.add('hidden');
+        previewContainer.classList.remove('hidden');
+        isDemo = false;
+    };
+    reader.readAsDataURL(file);
+}
+
+function clearImage() {
+    uploadedImageBase64 = null;
+    fileInput.value = '';
+    previewImg.src = '';
+    previewContainer.classList.add('hidden');
+    uploadPlaceholder.classList.remove('hidden');
+}
+
+// ─── DEMO LINK ────────────────────────────────────────────
+document.getElementById('demo-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    isDemo = true;
+    uploadedImageBase64 = null;
+    uploadPlaceholder.innerHTML = `
+        <div class="upload-icon" style="background:rgba(46,125,50,0.12);">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.5"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <h3 style="color:var(--primary);">Demo data loaded ✓</h3>
+        <p>Using sample soil health card data from Karnataka</p>
+        <button class="upload-file-btn" id="upload-btn" style="background:#eee;color:#555;">Change to Real Photo</button>
+    `;
+    document.getElementById('upload-btn').addEventListener('click', (e) => {
+        e.stopPropagation(); 
+        fileInput.click();
+        isDemo = false;
+    });
+});
+
+// ─── PILL SELECTORS ───────────────────────────────────────
+document.getElementById('crop-group').addEventListener('click', (e) => {
+    const btn = e.target.closest('.pill-btn');
+    if (!btn) return;
+    document.querySelectorAll('#crop-group .pill-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedCrop = btn.dataset.crop;
+});
+
+document.getElementById('lang-group').addEventListener('click', (e) => {
+    const btn = e.target.closest('.pill-btn');
+    if (!btn) return;
+    document.querySelectorAll('#lang-group .pill-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedLang = btn.dataset.responseLang;
+});
+
+// ─── ANALYZE ──────────────────────────────────────────────
+analyzeBtn.addEventListener('click', startAnalysis);
+
+async function startAnalysis() {
+    hideError();
+
+    // Validate
+    if (activeTab === 'upload' && !uploadedImageBase64 && !isDemo) {
+        showError('Please upload a photo of your soil health card, or use the demo data.');
+        return;
+    }
+    if (activeTab === 'manual') {
+        const n = document.getElementById('m-n').value;
+        const p = document.getElementById('m-p').value;
+        const k = document.getElementById('m-k').value;
+        if (!n || !p || !k) {
+            showError('Please enter at least Nitrogen (N), Phosphorus (P), and Potassium (K) values.');
+            return;
+        }
+    }
+
+    // Show loading
+    analysisCard.classList.add('hidden');
+    loadingSection.classList.remove('hidden');
+    resultsSection.classList.add('hidden');
+    animateLoadingSteps();
+
+    try {
+        const result = await callClaudeAPI();
+        showResults(result);
+    } catch (err) {
+        console.error(err);
+        analysisCard.classList.remove('hidden');
+        loadingSection.classList.add('hidden');
+        showError('Analysis failed. Please try again or check your connection.');
+    }
+}
+
+// ─── LOADING ANIMATION ────────────────────────────────────
+let loadingTimer = null;
+function animateLoadingSteps() {
+    const steps = ['step-1','step-2','step-3','step-4'];
+    let i = 0;
+    steps.forEach(id => document.getElementById(id).classList.remove('active'));
+    document.getElementById(steps[0]).classList.add('active');
+    loadingTimer = setInterval(() => {
+        i++;
+        if (i < steps.length) {
+            document.getElementById(steps[i-1]).classList.remove('active');
+            document.getElementById(steps[i]).classList.add('active');
+        }
+    }, 1800);
+}
+
+// ─── CLAUDE API CALL ──────────────────────────────────────
+async function callClaudeAPI() {
+    const systemPrompt = `You are Bhoomi AI, an expert agricultural AI assistant specializing in Indian farming. You analyze soil health cards and provide actionable, practical fertilizer recommendations tailored to Indian farmers.
+
+CRITICAL: You MUST respond ONLY with a valid JSON object. No markdown, no backticks, no explanation outside the JSON.
+
+Return this exact JSON structure:
+{
+  "soilScore": <number 0-100>,
+  "soilGrade": "<Excellent|Good|Fair|Poor>",
+  "summary": "<2-3 sentence overview in the specified language>",
+  "nutrients": {
+    "N": {"value": <0-100 percent of optimum>, "status": "<Low|Moderate|Optimal|High>", "ppm": "<estimated ppm>"},
+    "P": {"value": <0-100>, "status": "<Low|Moderate|Optimal|High>", "ppm": "<estimated ppm>"},
+    "K": {"value": <0-100>, "status": "<Low|Moderate|Optimal|High>", "ppm": "<estimated ppm>"},
+    "Ca": {"value": <0-100>, "status": "<Low|Moderate|Optimal|High>", "ppm": "<estimated ppm>"},
+    "Mg": {"value": <0-100>, "status": "<Low|Moderate|Optimal|High>", "ppm": "<estimated ppm>"},
+    "S":  {"value": <0-100>, "status": "<Low|Moderate|Optimal|High>", "ppm": "<estimated ppm>"}
+  },
+  "physicalProps": {
+    "ph": "<value>",
+    "organicMatter": "<value with %>",
+    "ec": "<value with dS/m>"
+  },
+  "chemicalRecs": [
+    "<recommendation 1 with quantity>",
+    "<recommendation 2 with quantity>",
+    "<recommendation 3 with quantity>"
+  ],
+  "organicRecs": [
+    "<organic recommendation 1>",
+    "<organic recommendation 2>",
+    "<organic recommendation 3>"
+  ],
+  "timing": "<Brief timing advice in 1-2 sentences>",
+  "costSavings": "<estimated savings e.g. ₹2,000 - ₹4,000/acre>",
+  "yieldImpact": "<expected yield improvement e.g. 15-20%>",
+  "criticalAlert": "<most urgent action needed, or null if no urgent issue>"
+}`;
+
+    let userContent = [];
+
+    if (activeTab === 'upload' && uploadedImageBase64) {
+        userContent = [
+            {
+                type: 'image',
+                source: {
+                    type: 'base64',
+                    media_type: 'image/jpeg',
+                    data: uploadedImageBase64
+                }
+            },
+            {
+                type: 'text',
+                text: `Please analyze this soil health card image. The farmer is growing ${selectedCrop} in Karnataka, India. Provide all recommendations in ${selectedLang}. Return ONLY the JSON object.`
+            }
+        ];
+    } else if (activeTab === 'manual') {
+        const n = document.getElementById('m-n').value || 'unknown';
+        const p = document.getElementById('m-p').value || 'unknown';
+        const k = document.getElementById('m-k').value || 'unknown';
+        const ph = document.getElementById('m-ph').value || 'unknown';
+        const om = document.getElementById('m-om').value || 'unknown';
+        const ec = document.getElementById('m-ec').value || 'unknown';
+        userContent = [{
+            type: 'text',
+            text: `Soil data: N=${n} kg/ha, P=${p} kg/ha, K=${k} kg/ha, pH=${ph}, Organic Matter=${om}%, EC=${ec} dS/m. Crop: ${selectedCrop}. Region: Karnataka, India. Provide all recommendations in ${selectedLang}. Return ONLY the JSON object.`
+        }];
+    } else {
+        // Demo data
+        userContent = [{
+            type: 'text',
+            text: `Demo soil health card data from Karnataka: N=120 kg/ha (low), P=45 kg/ha (moderate), K=180 kg/ha (good), pH=6.8, Organic Matter=2.4%, EC=0.5 dS/m, Zinc=0.4 ppm (deficient), Boron=0.3 ppm (low). Crop: ${selectedCrop}. Region: Tumkur District, Karnataka. Provide all recommendations in ${selectedLang}. Return ONLY the JSON object.`
+        }];
+    }
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 1500,
+            system: systemPrompt,
+            messages: [{ role: 'user', content: userContent }]
+        })
+    });
+
+    if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error?.message || 'API error');
+    }
+
+    const data = await response.json();
+    const rawText = data.content.map(b => b.text || '').join('');
+    
+    // Strip any markdown fences if present
+    const cleaned = rawText.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    
+    try {
+        return JSON.parse(cleaned);
+    } catch(e) {
+        // Try to extract JSON from the response
+        const match = cleaned.match(/\{[\s\S]*\}/);
+        if (match) return JSON.parse(match[0]);
+        throw new Error('Could not parse AI response as JSON');
+    }
+}
+
+// ─── SHOW RESULTS ─────────────────────────────────────────
+function showResults(data) {
+    clearInterval(loadingTimer);
+    loadingSection.classList.add('hidden');
+    resultsSection.classList.remove('hidden');
+
+    const grid = document.getElementById('results-grid');
+    grid.innerHTML = '';
+
+    // Card 1: Soil Score
+    const scoreCard = document.createElement('div');
+    scoreCard.className = 'result-card';
+    const score = data.soilScore || 72;
+    const circumference = 226.2;
+    const offset = circumference - (score / 100) * circumference;
+    const gradeColor = score >= 75 ? '#2E7D32' : score >= 50 ? '#f57c00' : '#c62828';
+    scoreCard.innerHTML = `
+        <div class="card-head green">🌿 Soil Health Score</div>
+        <div class="card-body">
+            <div class="score-display">
+                <div class="score-circle">
+                    <svg viewBox="0 0 90 90">
+                        <circle class="score-bg" cx="45" cy="45" r="36"/>
+                        <circle class="score-fill" id="score-arc" cx="45" cy="45" r="36" 
+                            style="stroke:${gradeColor};stroke-dashoffset:${offset}"/>
+                    </svg>
+                    <div class="score-text">
+                        <span class="score-num">${score}</span>
+                        <span class="score-label">/ 100</span>
+                    </div>
+                </div>
+                <div class="score-details">
+                    <div class="score-grade" style="color:${gradeColor}">${data.soilGrade || 'Good'}</div>
+                    <div class="score-sub">${data.summary || 'Your soil shows balanced nutrient levels with some areas for improvement.'}</div>
+                </div>
+            </div>
+            ${data.criticalAlert ? `<div style="background:#fff3e0;border-left:3px solid #ff6f00;padding:0.7rem 1rem;border-radius:6px;font-size:0.85rem;color:#e65100;margin-top:0.5rem;">⚠️ ${data.criticalAlert}</div>` : ''}
+        </div>
+    `;
+    grid.appendChild(scoreCard);
+
+    // Card 2: Physical Properties
+    const physCard = document.createElement('div');
+    physCard.className = 'result-card';
+    const props = data.physicalProps || { ph: '6.8', organicMatter: '2.4%', ec: '0.5 dS/m' };
+    physCard.innerHTML = `
+        <div class="card-head brown">🏺 Physical Properties</div>
+        <div class="card-body">
+            <div class="prop-table">
+                <div class="prop-row"><span class="prop-label">pH Level</span><span class="prop-val">${props.ph}</span></div>
+                <div class="prop-row"><span class="prop-label">Organic Matter</span><span class="prop-val">${props.organicMatter}</span></div>
+                <div class="prop-row"><span class="prop-label">Electrical Conductivity</span><span class="prop-val">${props.ec}</span></div>
+            </div>
+        </div>
+    `;
+    grid.appendChild(physCard);
+
+    // Card 3: Nutrient Levels (full width)
+    const nutriCard = document.createElement('div');
+    nutriCard.className = 'result-card full-width';
+    const nutrients = data.nutrients || {};
+    const statusClass = (s) => {
+        if (!s) return 'bar-mod';
+        const sl = s.toLowerCase();
+        if (sl === 'low') return 'bar-low';
+        if (sl === 'high') return 'bar-high';
+        if (sl === 'optimal') return 'bar-opt';
+        return 'bar-mod';
+    };
+    const nRows = ['N','P','K','Ca','Mg','S'].map(n => {
+        const d = nutrients[n] || { value: 50, status: 'Moderate', ppm: '—' };
+        return `<div class="nutrient-row">
+            <span class="nutrient-name">${n}</span>
+            <div class="nutrient-track"><div class="nutrient-bar ${statusClass(d.status)}" style="width:${d.value}%"></div></div>
+            <span class="nutrient-val">${d.status || 'Mod'}</span>
+        </div>`;
+    }).join('');
+    nutriCard.innerHTML = `
+        <div class="card-head blue">📊 Nutrient Levels</div>
+        <div class="card-body">${nRows}</div>
+    `;
+    grid.appendChild(nutriCard);
+
+    // Card 4: Chemical Fertilizer Recommendations
+    const chemCard = document.createElement('div');
+    chemCard.className = 'result-card';
+    const chemRecs = data.chemicalRecs || ['Apply Urea (46-0-0) at 2 bags/acre', 'Use DAP (18-46-0) at 1 bag/acre', 'Apply MOP (0-0-60) at 0.5 bag/acre'];
+    chemCard.innerHTML = `
+        <div class="card-head blue">🧪 Chemical Fertilizers</div>
+        <div class="card-body">
+            <ul class="rec-list">
+                ${chemRecs.map(r => `<li class="rec-item"><span class="rec-icon check">✓</span><span>${r}</span></li>`).join('')}
+            </ul>
+            ${data.timing ? `<p style="font-size:0.82rem;color:var(--text-light);margin-top:0.8rem;padding-top:0.8rem;border-top:1px solid #f0f0f0;">🕐 ${data.timing}</p>` : ''}
+        </div>
+    `;
+    grid.appendChild(chemCard);
+
+    // Card 5: Organic Recommendations
+    const orgCard = document.createElement('div');
+    orgCard.className = 'result-card';
+    const orgRecs = data.organicRecs || ['Neem Cake - 200 kg/acre', 'Farm Yard Manure (FYM) - 2 Tons/acre', 'Vermicompost - 500 kg/acre'];
+    orgCard.innerHTML = `
+        <div class="card-head green">🌿 Organic Alternatives</div>
+        <div class="card-body">
+            <ul class="rec-list">
+                ${orgRecs.map(r => `<li class="rec-item"><span class="rec-icon leaf">🌱</span><span>${r}</span></li>`).join('')}
+            </ul>
+        </div>
+    `;
+    grid.appendChild(orgCard);
+
+    // Card 6: Financial Impact (full width)
+    const impactCard = document.createElement('div');
+    impactCard.className = 'result-card full-width';
+    impactCard.innerHTML = `
+        <div class="card-head gold">💰 Expected Impact for ${selectedCrop}</div>
+        <div class="card-body">
+            <div class="impact-badges">
+                <div class="impact-badge">
+                    <span>💰 Cost Savings</span>
+                    <strong>${data.costSavings || '₹2,000–₹4,000/acre'}</strong>
+                </div>
+                <div class="impact-badge">
+                    <span>📈 Yield Improvement</span>
+                    <strong>${data.yieldImpact || '15–20%'}</strong>
+                </div>
+                <div class="impact-badge">
+                    <span>🤖 Powered by</span>
+                    <strong>Bhoomi AI</strong>
+                </div>
+            </div>
+        </div>
+    `;
+    grid.appendChild(impactCard);
+
+    // Scroll to results
+    resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ─── ERROR HANDLING ───────────────────────────────────────
+function showError(msg) {
+    errorMsg.textContent = msg;
+    errorMsg.style.display = 'block';
+}
+function hideError() {
+    errorMsg.style.display = 'none';
+}
+
+// ─── RE-ANALYZE ───────────────────────────────────────────
+reanalyzeBtn.addEventListener('click', () => {
+    resultsSection.classList.add('hidden');
+    analysisCard.classList.remove('hidden');
+    analysisCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+</script>
+</body>
+</html>
